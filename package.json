@@ -1,0 +1,28 @@
+{
+  "name": "chrome-app-manager",
+  "version": "0.0.0",
+  "description": "Communicate between a webview element and the Chrome App API",
+  "keywords": [
+    "chrome",
+    "app",
+    "webview",
+    "communication",
+    "message"
+  ],
+  "author": "Michaël Zasso",
+  "repository": "cheminfo-js/chrome-app-manager",
+  "bugs": {
+    "url": "https://github.com/cheminfo-js/chrome-app-manager/issues"
+  },
+  "homepage": "https://github.com/cheminfo-js/chrome-app-manager",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run build-webview && npm run build-chrome-app",
+    "build-webview": "cheminfo build --root ChromeAppManager --entry src/webview/index.js --name webview",
+    "build-chrome-app": "cheminfo build --root ChromeAppManager --entry src/chrome-app/index.js --name chrome-app"
+  },
+  "devDependencies": {
+    "cheminfo-tools": "^1.1.0"
+  },
+  "private": true
+}
