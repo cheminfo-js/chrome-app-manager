@@ -42,10 +42,11 @@ class MessageHandler {
 
     handleMessage(data) {
         debug('receive message', data);
-        let type = data.type.split('.');
-        switch (type[0]) {
+        let types = data.type.split('.');
+        let type = types.shift();
+        switch (type) {
             case 'admin':
-                if (type[0] === 'connect') {
+                if (types[0] === 'connect') {
 
                 }
                 break;
@@ -62,10 +63,10 @@ class MessageHandler {
                 }, 300);
                 break;
             default:
-                if (this.registeredHandlers.has(type[0])) {
-                    this.registeredHandlers.get(type[0]).call(this, data, type);
+                if (this.registeredHandlers.has(type)) {
+                    this.registeredHandlers.get(type).call(this, data, types[0]);
                 } else {
-                    let message = 'no handler registered for type ' + type[0];
+                    let message = 'no handler registered for type ' + type;
                     debug(message);
                     data.status = 'error';
                     data.message = message;
