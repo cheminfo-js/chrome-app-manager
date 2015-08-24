@@ -64,7 +64,7 @@ class MessageHandler {
                 break;
             default:
                 if (this.registeredHandlers.has(type)) {
-                    this.registeredHandlers.get(type).call(this, data, types[0]);
+                    this.registeredHandlers.get(type).call(this, data, types);
                 } else {
                     let message = 'no handler registered for type ' + type;
                     debug(message);
