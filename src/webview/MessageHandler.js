@@ -20,6 +20,10 @@ class MessageHandler {
         this.windowID = windowID;
         this.messageOrigin = messageOrigin;
         this.messageSource = messageSource;
+        this.messageSource.postMessage({
+            type: 'admin.connect',
+            windowID: windowID
+        }, this.messageOrigin);
         this.postPendingMessages();
     }
 

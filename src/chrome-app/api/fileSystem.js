@@ -34,15 +34,14 @@ module.exports = function (data, types) {
             break;
     }
 
-    const self = this;
-    prom.then(function (res) {
+    prom.then(res => {
         data.status = 'success';
         data.message = res;
-        self.postMessage(data);
-    }, function (err) {
+        this.postMessage(data);
+    }, err => {
         data.status = 'error';
         data.message = err;
-        self.postMessage(data);
+        this.postMessage(data);
     });
 };
 

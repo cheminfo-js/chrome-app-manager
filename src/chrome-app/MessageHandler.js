@@ -27,12 +27,19 @@ class MessageHandler {
         this.windowID = ++id;
         this.registeredHandlers = new Map();
         messageHandlers.set(this.windowID, this);
-        let self = this;
-        theWindow.addEventListener('contentload', function () {
+        theWindow.addEventListener('contentload', () => {
             debug('establish connection');
-            self.window = theWindow.contentWindow;
-            self.postMessage({type: 'admin.connect', message: self.windowID});
+            this.window = theWindow.contentWindow;
+            this.connect();
         });
+    }
+
+    connect() {
+        debug('connect');
+        this.postMessage({type: 'admin.connect', message: this.windowID});
+        this.connectionInterval = setInterval(() => {
+            this.postMessage({type: 'admin.connect', message: this.windowID});
+        }, 500);
     }
 
     postMessage(message) {
@@ -47,7 +54,8 @@ class MessageHandler {
         switch (type) {
             case 'admin':
                 if (types[0] === 'connect') {
-
+                    clearInterval(this.connectionInterval);
+                    this.connectionInterval = null;
                 }
                 break;
             case 'test':
@@ -55,11 +63,10 @@ class MessageHandler {
                 this.postMessage(data);
                 data.message *= 100;
                 this.postMessage(data);
-                let self = this;
-                setTimeout(function () {
+                setTimeout(() => {
                     data.status = 'success';
                     data.message = 'hello';
-                    self.postMessage(data);
+                    this.postMessage(data);
                 }, 300);
                 break;
             default:

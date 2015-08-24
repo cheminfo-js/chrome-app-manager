@@ -26,6 +26,9 @@ exports.start = function () {
                 return debug('received a message before connection');
             }
         } else {
+            if (data.type === 'admin.connect') {
+                return debug('receive connect after connect');
+            }
             if (!data.messageID) {
                 return debug('received a message without a messageID')
             }
