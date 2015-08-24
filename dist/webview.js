@@ -82,6 +82,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return debug('received a message before connection');
 	            }
 	        } else {
+	            if (data.type === 'admin.connect') {
+	                return debug('receive connect after connect');
+	            }
 	            if (!data.messageID) {
 	                return debug('received a message without a messageID');
 	            }
@@ -636,6 +639,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.windowID = windowID;
 	            this.messageOrigin = messageOrigin;
 	            this.messageSource = messageSource;
+	            this.messageSource.postMessage({
+	                type: 'admin.connect',
+	                windowID: windowID
+	            }, this.messageOrigin);
 	            this.postPendingMessages();
 	        }
 	    }, {
@@ -736,15 +743,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _inherits(Message, _EventEmitter);
 
 	    function Message(id, data) {
+	        var _this = this;
+
 	        _classCallCheck(this, Message);
 
 	        _get(Object.getPrototypeOf(Message.prototype), 'constructor', this).call(this);
-	        var self = this;
 	        this.id = id;
 	        this.data = data;
 	        var prom = new Promise(function (resolve, reject) {
-	            self._resolve = resolve;
-	            self._reject = reject;
+	            _this._resolve = resolve;
+	            _this._reject = reject;
 	        });
 	        this.then = function (onResolve, onReject) {
 	            return prom.then(onResolve, onReject);

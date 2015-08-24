@@ -612,6 +612,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var MessageHandler = (function () {
 	    function MessageHandler(theWindow) {
+	        var _this = this;
+
 	        _classCallCheck(this, MessageHandler);
 
 	        debug('creating message handler');
@@ -619,15 +621,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.windowID = ++id;
 	        this.registeredHandlers = new Map();
 	        messageHandlers.set(this.windowID, this);
-	        var self = this;
 	        theWindow.addEventListener('contentload', function () {
 	            debug('establish connection');
-	            self.window = theWindow.contentWindow;
-	            self.postMessage({ type: 'admin.connect', message: self.windowID });
+	            _this.window = theWindow.contentWindow;
+	            _this.connect();
 	        });
 	    }
 
 	    _createClass(MessageHandler, [{
+	        key: 'connect',
+	        value: function connect() {
+	            var _this2 = this;
+
+	            debug('connect');
+	            this.postMessage({ type: 'admin.connect', message: this.windowID });
+	            this.connectionInterval = setInterval(function () {
+	                _this2.postMessage({ type: 'admin.connect', message: _this2.windowID });
+	            }, 500);
+	        }
+	    }, {
 	        key: 'postMessage',
 	        value: function postMessage(message) {
 	            debug('post message', message);
@@ -636,23 +648,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'handleMessage',
 	        value: function handleMessage(data) {
+	            var _this3 = this;
+
 	            debug('receive message', data);
 	            var types = data.type.split('.');
 	            var type = types.shift();
 	            switch (type) {
 	                case 'admin':
-	                    if (types[0] === 'connect') {}
+	                    if (types[0] === 'connect') {
+	                        clearInterval(this.connectionInterval);
+	                        this.connectionInterval = null;
+	                    }
 	                    break;
 	                case 'test':
 	                    data.status = 'warn';
 	                    this.postMessage(data);
 	                    data.message *= 100;
 	                    this.postMessage(data);
-	                    var self = this;
 	                    setTimeout(function () {
 	                        data.status = 'success';
 	                        data.message = 'hello';
-	                        self.postMessage(data);
+	                        _this3.postMessage(data);
 	                    }, 300);
 	                    break;
 	                default:
@@ -694,6 +710,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var STORAGE_FS = 'fileSystem.directories';
 
 	module.exports = function (data, types) {
+	    var _this = this;
+
 	    debug('fs call');
 
 	    var message = data.message;
@@ -722,15 +740,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            break;
 	    }
 
-	    var self = this;
 	    prom.then(function (res) {
 	        data.status = 'success';
 	        data.message = res;
-	        self.postMessage(data);
+	        _this.postMessage(data);
 	    }, function (err) {
 	        data.status = 'error';
 	        data.message = err;
-	        self.postMessage(data);
+	        _this.postMessage(data);
 	    });
 	};
 
