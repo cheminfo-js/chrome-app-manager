@@ -1,6 +1,6 @@
 {
   "name": "chrome-app-manager",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Communicate between a webview element and the Chrome App API",
   "keywords": [
     "chrome",
