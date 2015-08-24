@@ -18,8 +18,8 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run build-webview && npm run build-chrome-app",
-    "build-webview": "cheminfo build --root ChromeAppManager --entry src/webview/index.js -n webview -b -u",
-    "build-chrome-app": "cheminfo build --root ChromeAppManager --entry src/chrome-app/index.js -n chrome-app -b -u"
+    "build-webview": "cheminfo build --root ChromeAppManager --entry src/webview/index.js -n webview -b",
+    "build-chrome-app": "cheminfo build --root ChromeAppManager --entry src/chrome-app/index.js -n chrome-app -b"
   },
   "dependencies": {
     "debug": "^2.2.0"
