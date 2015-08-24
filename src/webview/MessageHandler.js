@@ -1,12 +1,13 @@
 'use strict';
 
 const Message = require('./Message');
+const debug = require('debug')('MessageHandler');
 
 let idCounter = 0;
 let postedMessages = new Map();
 
 class MessageHandler {
-    constructor(theWindow) {
+    constructor() {
         this.ready = false;
         this.windowID = null;
         this.messageOrigin = null;
@@ -49,7 +50,7 @@ class MessageHandler {
         }
     }
 
-    handleMessage(data) {
+    static handleMessage(data) {
         if (!postedMessages.has(data.messageID)) {
             return debug('message not found');
         }
@@ -64,7 +65,7 @@ class MessageHandler {
             } else {
                 message.emit(data.status, data);
             }
-        } else {
+        } else { // no status is considered a success
             message._resolve(data);
             postedMessages.delete(data.messageID);
         }

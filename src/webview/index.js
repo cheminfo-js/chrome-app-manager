@@ -1,17 +1,20 @@
 'use strict';
 
 const Debug = require('debug');
-
 Debug.enable('*');
-Debug.colors = ['dodgerblue', 'darkorchid', 'crimson'];
 
 const debug = Debug('webview');
 const MessageHandler = require('./MessageHandler');
 
 let messageHandler = new MessageHandler();
 
+let started = false;
 exports.start = function () {
+    if (started) {
+        return debug('already started listening');
+    }
     debug('start listening');
+    started = true;
     window.addEventListener('message', function (event) {
         let data = event.data;
         debug('message received', data);
@@ -26,7 +29,7 @@ exports.start = function () {
             if (!data.messageID) {
                 return debug('received a message without a messageID')
             }
-            messageHandler.handleMessage(data);
+            MessageHandler.handleMessage(data);
         }
     });
 };

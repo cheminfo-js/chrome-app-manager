@@ -23,21 +23,21 @@ window.addEventListener('message', function (event) {
 class MessageHandler {
     constructor(theWindow) {
         debug('creating message handler');
-        this.window = theWindow;
+        this.window = null;
         this.windowID = ++id;
         this.registeredHandlers = new Map();
         messageHandlers.set(this.windowID, this);
-        this.postMessage({type: 'admin.connect', message: this.windowID}, 500);
+        let self = this;
+        theWindow.addEventListener('contentload', function () {
+            debug('establish connection');
+            self.window = theWindow.contentWindow;
+            self.postMessage({type: 'admin.connect', message: self.windowID});
+        });
     }
 
-    postMessage(message, wait) {
+    postMessage(message) {
         debug('post message', message);
-        if (wait) {
-            let self = this;
-            setTimeout(function(){self.window.postMessage(message, '*')}, wait);
-        } else {
-            this.window.postMessage(message, '*');
-        }
+        this.window.postMessage(message, '*');
     }
 
     handleMessage(data) {
