@@ -24,10 +24,11 @@ exports.start = function () {
             if (data.type === 'admin.connect') {
                 debug('connecting as window ' + data.message);
                 messageHandler.init(data.message, event.origin, event.source);
-            } else {
-                return debug('received a message before connection');
             }
         } else {
+            if (event.origin !== messageHandler.messageOrigin) {
+                return; // just ignore messages that are not for us
+            }
             if (data.type === 'admin.connect') {
                 return debug('receive connect after connect');
             }
