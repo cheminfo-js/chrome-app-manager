@@ -37,7 +37,6 @@ class MessageHandler {
         };
         let theMessage = new Message(id, toPost);
         if (this.ready) {
-            debug('post message', type, message);
             this.messageSource.postMessage(toPost, this.messageOrigin);
             postedMessages.set(id, theMessage);
         } else {
@@ -56,7 +55,7 @@ class MessageHandler {
 
     static handleMessage(data) {
         if (!postedMessages.has(data.messageID)) {
-            return debug('message not found');
+            return debug('message not found: ' + data.messageID);
         }
         let message = postedMessages.get(data.messageID);
         if (data.status) {

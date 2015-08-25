@@ -56,7 +56,6 @@ class MessageHandler {
     }
 
     postMessage(message) {
-        debug('post message', message);
         this.window.postMessage(message, '*');
     }
 
