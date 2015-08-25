@@ -1,9 +1,7 @@
 'use strict';
 
 const Debug = require('debug');
-if (window.DebugNS) {
-    Debug.enable(window.DebugNS);
-}
+window.Debug = Debug;
 
 const debug = Debug('webview');
 const MessageHandler = require('./MessageHandler');
