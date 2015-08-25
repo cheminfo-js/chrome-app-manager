@@ -17,7 +17,6 @@ exports.start = function () {
     started = true;
     window.addEventListener('message', function (event) {
         let data = event.data;
-        debug('message received', data);
         if (!messageHandler.ready) {
             if (data.type === 'admin.connect') {
                 debug('connecting as window ' + data.message);
@@ -28,11 +27,12 @@ exports.start = function () {
                 return; // just ignore messages that are not for us
             }
             if (data.type === 'admin.connect') {
-                return debug('receive connect after connect');
+                return debug('received connect after connect');
             }
             if (!data.messageID) {
-                return debug('received a message without a messageID')
+                return debug('received a message without a messageID');
             }
+            debug('message received', data);
             MessageHandler.handleMessage(data);
         }
     });
