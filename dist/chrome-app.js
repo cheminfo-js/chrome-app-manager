@@ -57,7 +57,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var Debug = __webpack_require__(1);
-	Debug.enable('*');
+	if (window.DebugNS) {
+	    Debug.enable(window.DebugNS);
+	}
 
 	var MessageHandler = __webpack_require__(4);
 
@@ -622,6 +624,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.registeredHandlers = new Map();
 	        messageHandlers.set(this.windowID, this);
 	        theWindow.addEventListener('contentload', function () {
+	            // If the child was reloaded or navigated to a new page, we must reconnect
+	            _this.disconnect();
 	            debug('establish connection');
 	            _this.window = theWindow.contentWindow;
 	            _this.connect();
@@ -640,9 +644,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }, 500);
 	        }
 	    }, {
+	        key: 'disconnect',
+	        value: function disconnect() {
+	            this.clearConnectionInterval();
+	        }
+	    }, {
+	        key: 'clearConnectionInterval',
+	        value: function clearConnectionInterval() {
+	            if (this.connectionInterval) {
+	                clearInterval(this.connectionInterval);
+	                this.connectionInterval = null;
+	            }
+	        }
+	    }, {
 	        key: 'postMessage',
 	        value: function postMessage(message) {
-	            debug('post message', message);
 	            this.window.postMessage(message, '*');
 	        }
 	    }, {
@@ -656,8 +672,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            switch (type) {
 	                case 'admin':
 	                    if (types[0] === 'connect') {
-	                        clearInterval(this.connectionInterval);
-	                        this.connectionInterval = null;
+	                        this.clearConnectionInterval();
 	                    }
 	                    break;
 	                case 'test':
@@ -730,10 +745,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            prom = readDirectory(message.label);
 	            break;
 	        case 'readFile':
-	            prom = readFile(message.label, message.name, message.options);
+	            prom = readFile(message.label, message.name, message);
 	            break;
 	        case 'writeFile':
-	            prom = writeFile(message.label, message.name, message.data, message.options);
+	            prom = writeFile(message.label, message.name, message.data, message);
 	            break;
 	        default:
 	            prom = Promise.reject('Unknown fileSystem action: ' + types[0]);
