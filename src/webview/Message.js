@@ -12,7 +12,7 @@ class Message extends EventEmitter {
             this._resolve = resolve;
             this._reject = reject;
         });
-    },
+    }
 
     then(onResolve, onReject) {
         return this[promise].then(onResolve, onReject);
