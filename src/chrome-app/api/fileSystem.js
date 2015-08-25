@@ -24,10 +24,10 @@ module.exports = function (data, types) {
             prom = readDirectory(message.label);
             break;
         case 'readFile':
-            prom = readFile(message.label, message.name, message.options);
+            prom = readFile(message.label, message.name, message);
             break;
         case 'writeFile':
-            prom = writeFile(message.label, message.name, message.data, message.options);
+            prom = writeFile(message.label, message.name, message.data, message);
             break;
         default:
             prom = Promise.reject('Unknown fileSystem action: ' + types[0]);
