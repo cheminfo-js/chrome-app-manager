@@ -38,5 +38,5 @@ Write data to a file.
 __params__
 * `name` file name to write
 * `encoding` see readFile
-* `exclusive` boolean indicating of the action should fail when the file already exists (default: false)
+* `exclusive` boolean indicating if the action should fail when the file already exists (default: false)
 * `type` mime type of the data (default: text/plain)
