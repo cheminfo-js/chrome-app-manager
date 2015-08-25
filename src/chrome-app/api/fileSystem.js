@@ -18,7 +18,7 @@ module.exports = function (data, types) {
     let prom;
     switch (types[0]) {
         case 'selectDirectory':
-            prom = selectDirectory(message.label);
+            prom = selectDirectory(message.label).then(() => true);
             break;
         case 'readDirectory':
             prom = readDirectory(message.label);
@@ -51,7 +51,7 @@ function selectDirectory(label) {
         type: 'openDirectory'
     }).then(function (entry) {
         let entryID = chrome.fileSystem.retainEntry(entry);
-        return saveEntry(label, entryID);
+        return saveEntry(label, entryID).then(() => entryID);
     });
 }
 
