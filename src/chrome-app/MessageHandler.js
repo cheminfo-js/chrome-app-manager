@@ -28,6 +28,8 @@ class MessageHandler {
         this.registeredHandlers = new Map();
         messageHandlers.set(this.windowID, this);
         theWindow.addEventListener('contentload', () => {
+            // If the child was reloaded or navigated to a new page, we must reconnect
+            this.disconnect();
             debug('establish connection');
             this.window = theWindow.contentWindow;
             this.connect();
@@ -42,6 +44,17 @@ class MessageHandler {
         }, 500);
     }
 
+    disconnect() {
+        this.clearConnectionInterval();
+    }
+
+    clearConnectionInterval() {
+        if (this.connectionInterval) {
+            clearInterval(this.connectionInterval);
+            this.connectionInterval = null;
+        }
+    }
+
     postMessage(message) {
         debug('post message', message);
         this.window.postMessage(message, '*');
@@ -54,8 +67,7 @@ class MessageHandler {
         switch (type) {
             case 'admin':
                 if (types[0] === 'connect') {
-                    clearInterval(this.connectionInterval);
-                    this.connectionInterval = null;
+                    this.clearConnectionInterval();
                 }
                 break;
             case 'test':
